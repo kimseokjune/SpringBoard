@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/tx
+  http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@211.183.7.63:1521:orcl" />
+		<property name="user" value="java06" />
+		<property name="password" value="java06" />
+	</bean>
+
+
+
+	<!-- dao-dateSource -->
+	<bean id="boardDao" class="com.webjjang.board.dao.BoardDao">
+		<property name="jdbcTemplate" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- controller - service -->
+	<bean id="boardController" class="com.webjjang.controller.BoardController">
+		<property name="boardListService" ref="boardListService" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- service - dao -->
+	
+	<bean id="boardListService" class="com.webjjang.board.service.BoardListService">
+		<property name="boardDao" ref="boardDao" />
+	</bean>
+	
+	
+
+
+</beans>
